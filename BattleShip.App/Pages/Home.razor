@@ -4,10 +4,36 @@
 
 @using System.Text.Json;
 
-<PageTitle>Home</PageTitle>
 
-<button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre l'ordinateur</button>
-<button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre un autre joueur</button>
+
+@* <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'accueil</title>
+</head>
+<body>
+    <div class="container">
+        <PageTitle>Home</PageTitle>
+            <div class="menu">
+                <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre l'ordinateur</button>
+                <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre un autre joueur</button>
+            </div>    
+    </div>
+</body>
+</html> *@
+
+<PageTitle>Naval Ship</PageTitle>
+<div class="homeContainer">
+        <div class="gameMode">
+            <p>Choix du mode de jeux</p>
+        </div>
+        <div class="menu">
+            <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre l'ordinateur</button>
+            <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre un autre joueur</button>
+        </div>
+</div>
 
 
 @code {

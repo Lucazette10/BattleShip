@@ -4,37 +4,81 @@
 @using System.Text.Json;
 
 <h3>BattleShip Game : @Id</h3>
+<div class="container">
+    <div class="playerGrid">
+        <h4>Your Grid</h4>
+        <div class="playerTable">
+            <table>
+                <tr>
+                    <td></td> <!-- Empty cell for the top-left corner -->
+                    @for (char c = 'A'; c <= 'J'; c++)
+                    {
+                        <td style="text-align: center">@c</td>
+                    }
+                </tr>
+                @for (int row = 0; row < 10; row++) {
+                    <tr>
+                        <td>@(row + 1)</td> <!-- Row number -->
+                        @for (int col = 0; col < 10; col++) {
+                            var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
+                            if (playerGrid[row, col] == "S") {
+                                style += "background-color: rgba(128, 128, 128, 0.2);";
+                            } else if (playerGrid[row, col] == "X") {
+                                style += "background-color: rgba(255, 0, 0, 0.2);"; 
+                            } else {
+                                style += "background-color: rgba(0, 0, 255, 0.2);"; 
+                            }
+                            <td style="@style">
+                                @playerGrid[row, col]
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
 
-<div>
-    <h4>Your Grid</h4>
-    <table>
-        @for (int row = 0; row < 10; row++) {
+    <div class="leaderboard">
+        <h4>Historique des coups joués</h4>
+        <ul>
+            @foreach(var move in playerMoves) {
+                <li>@move</li>
+            }
+        </ul>
+    </div>
+
+    <div class="computerGrid">
+        <h4>Opponent's Grid</h4>
+        <table>
             <tr>
-                @for (int col = 0; col < 10; col++) {
-                    <td style="border: 1px solid black; width: 20px; height: 20px;">
-                        @playerGrid[row, col]
-                    </td>
+                <td></td> <!-- Empty cell for the top-left corner -->
+                @for (char c = 'A'; c <= 'J'; c++)
+                {
+                    <td style="text-align: center">@c</td>
                 }
             </tr>
-        }
-    </table>
-</div>
-
-<div>
-    <h4>Opponent's Grid</h4>
-    <table>
-        @for (int row = 0; row < 10; row++) {
-            var currentRow = row;
-            <tr>
-                @for (int col = 0; col < 10; col++) {
-                    var currentCol = col;
-                    <td @onclick="() => HandleClick(currentRow, currentCol)" style="border: 1px solid black; width: 20px; height: 20px;">
-                        @opponentGrid[row, col]
-                    </td>
-                }
-            </tr>
-        }
-    </table>
+            @for (int row = 0; row < 10; row++) {
+                var currentRow = row;
+                <tr>
+                    <td>@(row + 1)</td> <!-- Row number -->
+                    @for (int col = 0; col < 10; col++) {
+                        var currentCol = col;
+                        var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
+                        if (opponentGrid[row, col] == "S") {
+                            style += "background-color: rgba(128, 128, 128, 0.2);";
+                        } else if (opponentGrid[row, col] == "X") {
+                            style += "background-color: rgba(255, 0, 0, 0.2);"; 
+                        } else {
+                            style += "background-color: rgba(0, 0, 255, 0.2);"; 
+                        }
+                        <td @onclick="() => HandleClick(currentRow, currentCol)" style="@style">
+                            @opponentGrid[row, col]
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
 </div>
 
 @code {
@@ -46,6 +90,7 @@
 
     private string[,] opponentGrid = new string[10, 10];
     private string[,] playerGrid = new string[10, 10];
+    private List<string> playerMoves = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,6 +114,12 @@
         Console.WriteLine($"Clicked on {row}, {col}");
         Console.WriteLine($"Sending attack to {Id}");
 
+        if (opponentGrid[row, col] == "X" || opponentGrid[row, col] == "O")
+        {
+            Console.WriteLine("You already attacked this cell!");
+            return;
+        }
+
         var coordinate = new { Row = row, Col = col };
         var json = JsonSerializer.Serialize(coordinate);
         var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -83,10 +134,10 @@
             Console.WriteLine($"attack response : {attackResponse.ComputerAttack.Col}, {attackResponse.ComputerAttack.Row}");
 
             if(attackResponse.ComputerWon == true){
-                //return "L'ORDINATEUR A GAGNE !";
+                Console.WriteLine("L'ordinateur a gagné !");
             }
             if(attackResponse.PlayerWon == true){
-                //return "T AS GAGNE !";
+                Console.WriteLine("Tu as gagné !");
             }
 
             if(playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "S") {
@@ -103,16 +154,20 @@
 
             if(attackResponse.PlayerAttackResult) {
                 Console.WriteLine("You hit the ship!");
+                playerMoves.Add($"You hit the ship at ({row}, {col})!");
                 opponentGrid[row, col] = "X";
             }
             else if(!attackResponse.PlayerAttackResult) {
                 Console.WriteLine("You missed the ship!");
+                playerMoves.Add($"You missed the ship at ({row}, {col})!");
                 opponentGrid[row, col] = "O";
             }
             else {
-                Console.WriteLine("You already attacked this cell!");
+                Console.WriteLine("You already attacked this cell !");
+                playerMoves.Add($"You already attacked this cell !");
             }
 
+            StateHasChanged();
             
             
         }

@@ -39,6 +39,11 @@ app.MapGet("/start", (NavalShipService navalShipService) =>
 {
     Game game = new Game();
     game.gameId = Guid.NewGuid().ToString();
+    navalShipService.ClearGrids();
+    navalShipService.ClearShips(navalShipService.PlayerShips);
+    navalShipService.ClearShips(navalShipService.ComputerShips);
+    navalShipService.AddShips(navalShipService.PlayerGrid, navalShipService.PlayerShips);  
+    navalShipService.AddShips(navalShipService.ComputerGrid, navalShipService.ComputerShips);
     game.playerShips = navalShipService.PlayerShips.ToList();
     game.computerShips = navalShipService.ComputerShips.ToList();
     navalShipService.SaveGame(game);

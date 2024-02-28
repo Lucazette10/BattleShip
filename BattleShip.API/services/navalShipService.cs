@@ -1,4 +1,5 @@
 using BattleShip.Models;
+using Microsoft.AspNetCore.Components.Web;
 
 public class NavalShipService
 {
@@ -15,9 +16,9 @@ public class NavalShipService
         PlayerGrid = new char[gridSize, gridSize];
         ComputerGrid = new char[gridSize, gridSize];
 
-        PlayerShips = new Ship[] { new Ship("A", 4), new Ship("B", 3), new Ship("C", 2), new Ship("D", 2), new Ship("E", 1), new Ship("F", 1) };
-        ComputerShips = new Ship[] { new Ship("A", 4), new Ship("B", 3), new Ship("C", 2), new Ship("D", 2), new Ship("E", 1), new Ship("F", 1) };
-
+        PlayerShips = CreateShipsList();
+        ComputerShips = CreateShipsList();
+       
         Games = new Dictionary<string, Game>();
 
         for (int i = 0; i < 10; i++)
@@ -29,8 +30,27 @@ public class NavalShipService
             }
         }
 
-        AddShips(PlayerGrid, PlayerShips);
-        AddShips(ComputerGrid, ComputerShips);
+        //AddShips(PlayerGrid, PlayerShips);
+        //AddShips(ComputerGrid, ComputerShips);
+    }
+
+    public Ship[] CreateShipsList(){
+        return new Ship[] { new Ship("A", 4), new Ship("B", 3), new Ship("C", 2), new Ship("D", 2), new Ship("E", 1), new Ship("F", 1) };;
+    }
+
+    public void ClearGrids() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                PlayerGrid[i, j] = '\0';
+                ComputerGrid[i, j] = '\0';
+            }
+        }
+    }
+
+    public void ClearShips(Ship[] ships) {
+        foreach (var ship in ships) {
+            ship.coordinates.Clear();
+        }
     }
 
     public void AddShips(char[,] grid, Ship[] ships) {
@@ -119,11 +139,16 @@ public class NavalShipService
 
     public AttackResponse ComputerAttack(Game game, char[,] grid, AttackResponse response) {
         Random random = new Random();
-        Coordinate coordinate = new Coordinate
-        {
-            Row = random.Next(grid.GetLength(0)),
-            Col = random.Next(grid.GetLength(1))
-        };
+        Coordinate coordinate;
+
+        do { coordinate = new Coordinate
+            {
+                Row = random.Next(grid.GetLength(0)),
+                Col = random.Next(grid.GetLength(1))
+            };
+        } while (game.computerAttacksCoordinates.Any(c => c.Row == coordinate.Row && c.Col == coordinate.Col));
+
+        game.computerAttacksCoordinates.Add(coordinate);
 
         response.ComputerAttack = coordinate;
         return response;
