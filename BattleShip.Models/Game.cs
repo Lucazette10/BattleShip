@@ -4,7 +4,14 @@
 public class Game {
     public List<Ship> playerShips { get; set; }
     public List<Ship> computerShips { get; set; }
+    public List<Coordinate> computerAttacksCoordinates { get; set; }
     public string gameId { get; set; }
+
+    public Game() {
+        playerShips = new List<Ship>();
+        computerShips = new List<Ship>();
+        computerAttacksCoordinates = new List<Coordinate>();
+    }
 
     public bool IsShipAtCoordinate(Coordinate coordinate) {
         foreach (var ship in computerShips) {
