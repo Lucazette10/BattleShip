@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleShip.API", "BattleShip.API\BattleShip.API.csproj", "{EACF1572-4162-4EF4-B36C-8C2EAAB1EEB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleShip.App", "BattleShip.App\BattleShip.App.csproj", "{C013EAFC-4CA9-4118-8649-512A55922549}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleShip.Models", "BattleShip.Models\BattleShip.Models.csproj", "{09204847-097B-471B-B5B3-08013BAED383}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EACF1572-4162-4EF4-B36C-8C2EAAB1EEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EACF1572-4162-4EF4-B36C-8C2EAAB1EEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EACF1572-4162-4EF4-B36C-8C2EAAB1EEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EACF1572-4162-4EF4-B36C-8C2EAAB1EEB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C013EAFC-4CA9-4118-8649-512A55922549}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C013EAFC-4CA9-4118-8649-512A55922549}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C013EAFC-4CA9-4118-8649-512A55922549}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C013EAFC-4CA9-4118-8649-512A55922549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09204847-097B-471B-B5B3-08013BAED383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09204847-097B-471B-B5B3-08013BAED383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09204847-097B-471B-B5B3-08013BAED383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09204847-097B-471B-B5B3-08013BAED383}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

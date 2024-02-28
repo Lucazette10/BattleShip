@@ -1,0 +1,20 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+@using System.Text.Json;
+
+<PageTitle>Home</PageTitle>
+
+<button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre l'ordinateur</button>
+<button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre un autre joueur</button>
+
+
+@code {
+    private string PageTitle { get; set; } = "Naval Battle!";
+    private async Task RedirectToGamePage()
+    {
+        NavigationManager.NavigateTo($"/game"); 
+    }
+}
+

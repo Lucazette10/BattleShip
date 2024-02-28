@@ -1,0 +1,146 @@
+@page "/game"
+@inject HttpClient HttpClient
+
+@using System.Text.Json;
+
+<h3>BattleShip Game : @Id</h3>
+
+<div>
+    <h4>Your Grid</h4>
+    <table>
+        @for (int row = 0; row < 10; row++) {
+            <tr>
+                @for (int col = 0; col < 10; col++) {
+                    <td style="border: 1px solid black; width: 20px; height: 20px;">
+                        @playerGrid[row, col]
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+<div>
+    <h4>Opponent's Grid</h4>
+    <table>
+        @for (int row = 0; row < 10; row++) {
+            var currentRow = row;
+            <tr>
+                @for (int col = 0; col < 10; col++) {
+                    var currentCol = col;
+                    <td @onclick="() => HandleClick(currentRow, currentCol)" style="border: 1px solid black; width: 20px; height: 20px;">
+                        @opponentGrid[row, col]
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+@code {
+    //[Parameter] public string Id { get; set; }
+    
+    private Models.Game game;
+    private List<Models.Ship> playerShips;
+    private string Id;
+
+    private string[,] opponentGrid = new string[10, 10];
+    private string[,] playerGrid = new string[10, 10];
+
+    protected override async Task OnInitializedAsync()
+    {
+        game = await StartGame();
+        playerShips = game.playerShips;
+        Id = game.gameId;
+
+        foreach (var ship in playerShips)
+        {
+            foreach (var coordinate in ship.coordinates)
+            {
+                playerGrid[coordinate.Row, coordinate.Col] = "S";
+            }
+        }
+
+    }
+    
+    
+    private async Task HandleClick(int row, int col)
+    {
+        Console.WriteLine($"Clicked on {row}, {col}");
+        Console.WriteLine($"Sending attack to {Id}");
+
+        var coordinate = new { Row = row, Col = col };
+        var json = JsonSerializer.Serialize(coordinate);
+        var data = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await HttpClient.PostAsync($"/attack/{Id}", data);
+        Console.WriteLine($"response : {response}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Update the UI
+            var attackResponse = await response.Content.ReadFromJsonAsync<Models.AttackResponse>();
+            Console.WriteLine($"attack response : {attackResponse.ComputerAttack.Col}, {attackResponse.ComputerAttack.Row}");
+
+            if(attackResponse.ComputerWon == true){
+                //return "L'ORDINATEUR A GAGNE !";
+            }
+            if(attackResponse.PlayerWon == true){
+                //return "T AS GAGNE !";
+            }
+
+            if(playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "S") {
+                Console.WriteLine("Computer hit your ship!");
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] = "X";
+            }
+            else if(playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == null) {
+                Console.WriteLine("Computer missed your ship!");
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] = "O";
+            }
+            else {
+                Console.WriteLine("Computer already attacked this cell!");
+            }
+
+            if(attackResponse.PlayerAttackResult) {
+                Console.WriteLine("You hit the ship!");
+                opponentGrid[row, col] = "X";
+            }
+            else if(!attackResponse.PlayerAttackResult) {
+                Console.WriteLine("You missed the ship!");
+                opponentGrid[row, col] = "O";
+            }
+            else {
+                Console.WriteLine("You already attacked this cell!");
+            }
+
+            
+            
+        }
+        else
+        {
+            // Handle the error
+        }
+    }
+
+    private async Task<Models.Game> StartGame(){
+
+        var response = await HttpClient.GetAsync("/start");
+
+        if (response.IsSuccessStatusCode)
+        {
+            if(response.Content.Headers.ContentType.MediaType == "application/json") {
+                game = await response.Content.ReadFromJsonAsync<Models.Game>(); 
+                return game;
+            }
+            else {
+                Console.WriteLine("Error: Response is not in JSON format");
+            }
+        }
+        else
+        {
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Error: {errorResponse}");
+        }
+        return null;
+    }
+}

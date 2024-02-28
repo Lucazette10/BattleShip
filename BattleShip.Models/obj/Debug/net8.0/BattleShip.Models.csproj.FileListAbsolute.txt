@@ -1,0 +1,11 @@
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\bin\Debug\net8.0\BattleShip.Models.deps.json
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\bin\Debug\net8.0\BattleShip.Models.dll
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\bin\Debug\net8.0\BattleShip.Models.pdb
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\BattleShip.Models.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\BattleShip.Models.AssemblyInfoInputs.cache
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\BattleShip.Models.AssemblyInfo.cs
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\BattleShip.Models.csproj.CoreCompileInputs.cache
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\BattleShip.Models.dll
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\refint\BattleShip.Models.dll
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\BattleShip.Models.pdb
+c:\Users\lucap\Projet\BatailleNavale\BattleShip.Models\obj\Debug\net8.0\ref\BattleShip.Models.dll
