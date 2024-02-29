@@ -1,0 +1,181 @@
+@page "/game/pvp"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="globalContainer">
+    <div class="header">
+        <div class="menu" @onclick="RedirectToHomePage">
+            <i class="fas fa-ship"></i>
+            <p>Retour menu</p>
+        </div>
+        <h3 class="BattleshipGameTitle">BattleShip Game : @Id</h3>
+    </div>
+
+    <p>@(isPlayer1Turn ? "C'est au joueur 1 de jouer" : "C'est au joueur 2 de jouer")</p>
+
+    <div class="container-both-grid">
+        <div class="game-grid-player1">
+            <table>
+                <tr>
+                    <td></td> <!-- Empty cell for the top-left corner -->
+                    @for (char c = 'A'; c <= 'J'; c++)
+                    {
+                        <td style="text-align: center">@c</td>
+                    }
+                </tr>
+                @for (int row = 0; row < 10; row++)
+                {
+                    <tr>
+                        <td>@(row + 1)</td> <!-- Row number -->
+                        @for (int col = 0; col < 10; col++)
+                        {
+                            var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
+                            if (playerGrid1[row, col] == "S")
+                            {
+                                style += "background-color: rgba(128, 128, 128, 0.4);";
+                            }
+                            else if (playerGrid1[row, col] == "X")
+                            {
+                                style += "background-color: rgba(255, 0, 0, 0.4);";
+                            }
+                            else
+                            {
+                                style += "background-color: rgba(0, 0, 255, 0.4);";
+                            }
+                            <td style="@style" @onclick="() => HandleCellClickForGrid1(row, col)">
+                                @playerGrid1[row, col]
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+
+        <div class="game-grid-player2">
+            <table>
+                <tr>
+                    <td></td> <!-- Empty cell for the top-left corner -->
+                    @for (char c = 'A'; c <= 'J'; c++)
+                    {
+                        <td style="text-align: center">@c</td>
+                    }
+                </tr>
+                @for (int row = 0; row < 10; row++)
+                {
+                    <tr>
+                        <td>@(row + 1)</td> <!-- Row number -->
+                        @for (int col = 0; col < 10; col++)
+                        {
+                            var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
+                            if (playerGrid2[row, col] == "S")
+                            {
+                                style += "background-color: rgba(128, 128, 128, 0.4);";
+                            }
+                            else if (playerGrid2[row, col] == "X")
+                            {
+                                style += "background-color: rgba(255, 0, 0, 0.4);";
+                            }
+                            else
+                            {
+                                style += "background-color: rgba(0, 0, 255, 0.4);";
+                            }
+                            <td style="@style" @onclick="() => HandleCellClickForGrid2(row, col)">
+                                @playerGrid2[row, col]
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+    private string Id;
+    bool isPlayer1Turn = true;
+    private string[,] playerGrid1 = new string[10, 10];
+    private string[,] playerGrid2 = new string[10, 10];
+    private List<Models.Ship> playerShips1;
+    private List<Models.Ship> playerShips2;
+    private Models.Game game;
+    
+    void HandleCellClickForGrid1(int row, int col){
+        if(isPlayer1Turn){
+            Console.WriteLine("Ce n'est pas a toi de jouer !");
+            return;
+        }
+
+        if (playerGrid1[row, col] == "X" || playerGrid1[row, col] == "O")
+        {
+            Console.WriteLine("Tu as déjà attaqué ici !");
+            return;
+        }
+
+        isPlayer1Turn = !isPlayer1Turn;
+    }
+    void HandleCellClickForGrid2(int row, int col){
+        if(!isPlayer1Turn){
+            return;
+        }
+        isPlayer1Turn = !isPlayer1Turn;
+    }
+
+    /*protected override async Task OnInitializedAsync()
+    {
+        game = await StartGamePVP();
+        playerShips1 = game.playerShips;
+        playerShips2 = game.playerShips2;
+        Id = game.gameId;
+
+        foreach (var ship in playerShips1)
+        {
+            foreach (var coordinate in ship.coordinates)
+            {
+                playerGrid1[coordinate.Row, coordinate.Col] = "S";
+            }
+        }
+
+        foreach (var ship in playerShips2)
+        {
+            foreach (var coordinate in ship.coordinates)
+            {
+                playerGrid2[coordinate.Row, coordinate.Col] = "S";
+            }
+        }
+
+    }*/
+
+    private async Task<Models.Game> StartGamePVP()
+    {
+
+        var response = await HttpClient.GetAsync("/start/pvp");
+
+        if (response.IsSuccessStatusCode)
+        {
+            if (response.Content.Headers.ContentType.MediaType == "application/json")
+            {
+                game = await response.Content.ReadFromJsonAsync<Models.Game>();
+                return game;
+            }
+            else
+            {
+                Console.WriteLine("Error: Response is not in JSON format");
+            }
+        }
+        else
+        {
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Error: {errorResponse}");
+        }
+        return null;
+    }
+
+    private async Task RedirectToHomePage()
+    {
+        NavigationManager.NavigateTo($"/");
+    }
+}

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using BattleShip.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,10 +36,13 @@ app.MapGet("/grid", () =>
     return navalShipService;
 });
 
-app.MapGet("/start", (NavalShipService navalShipService) =>
+
+
+app.MapGet("/start/{difficulty}", (string difficulty, NavalShipService navalShipService) =>
 {
     Game game = new Game();
     game.gameId = Guid.NewGuid().ToString();
+    game.difficulty = difficulty;
     navalShipService.ClearGrids();
     navalShipService.ClearShips(navalShipService.PlayerShips);
     navalShipService.ClearShips(navalShipService.ComputerShips);
@@ -49,6 +53,15 @@ app.MapGet("/start", (NavalShipService navalShipService) =>
     navalShipService.SaveGame(game);
 
     return Results.Ok(game);
+});
+
+app.MapGet("/start/pvp", (NavalShipService navalShipService) =>
+{
+    GamePVP gamePVP = new GamePVP();
+    gamePVP.gameId = Guid.NewGuid().ToString();
+    
+    return Results.Ok(gamePVP);
+
 });
 
 app.MapPost("/attack/{gameId}", (

@@ -120,8 +120,8 @@ public class NavalShipService
             response = PlayerAttack(game, ComputerGrid, coordinate, response);
             response = ComputerAttack(game, PlayerGrid, response);
 
-            response.ComputerWon = HasSomeoneWon(PlayerGrid, game.playerShips.ToArray());
-            response.PlayerWon = HasSomeoneWon(ComputerGrid, game.computerShips.ToArray());
+            response.ComputerWon = HasSomeoneWon(game.computerAttacksCoordinates, game.playerShips.ToArray());
+            response.PlayerWon = HasSomeoneWon(game.computerAttacksCoordinates, game.computerShips.ToArray());
         
             return response;
         }
@@ -154,10 +154,14 @@ public class NavalShipService
         return response;
     }
 
-    public bool HasSomeoneWon(char[,] grid, Ship[] ships) {
+    public bool HasSomeoneWon(List<Coordinate> shots, Ship[] ships) {
+        if(shots == null || ships == null) {
+            throw new ArgumentNullException("shots or ships are null");
+        }
+
         foreach (var ship in ships) {
             foreach (var coordinate in ship.coordinates) {
-                if (grid[coordinate.Row, coordinate.Col] != 'X') {
+                if (!shots.Any(shot => shot.Row == coordinate.Row && shot.Col == coordinate.Col)) {
                     return false;
                 }
             }

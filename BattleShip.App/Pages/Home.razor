@@ -4,43 +4,50 @@
 
 @using System.Text.Json;
 
-
-
-@* <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page d'accueil</title>
-</head>
-<body>
-    <div class="container">
-        <PageTitle>Home</PageTitle>
-            <div class="menu">
-                <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre l'ordinateur</button>
-                <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre un autre joueur</button>
-            </div>    
-    </div>
-</body>
-</html> *@
-
 <PageTitle>Naval Ship</PageTitle>
 <div class="homeContainer">
+    @if (!gameCreated)
+    {
         <div class="gameMode">
             <p>Choix du mode de jeux</p>
         </div>
         <div class="menu">
-            <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre l'ordinateur</button>
-            <button class="btn btn-primary" @onclick="RedirectToGamePage">Créer une nouvelle partie contre un autre joueur</button>
+            <button class="btn btn-primary" @onclick="CreateGame">Créer une nouvelle partie contre l'ordinateur</button>
+            <button class="btn btn-primary" @onclick="NavigateToPlayerVsPlayer">Créer une nouvelle partie contre un autre joueur</button>
         </div>
+    }
+    else
+    {
+        <div class="gameMode">
+            <p>Choix de la difficulté</p>
+        </div>
+        <div class="menu">
+            <button class="btn btn-primary" @onclick="@(() => NavigateToGameWithDifficulty("easy"))">Choisir la difficulté - Facile</button>
+            <button class="btn btn-primary" @onclick="@(() => NavigateToGameWithDifficulty("hard"))">Choisir la difficulté - Difficile</button>
+            <button class="btn btn-primary" @onclick="@(CreateGame)">Retour au menu</button>
+        
+        </div>
+    }
+    
 </div>
 
 
 @code {
     private string PageTitle { get; set; } = "Naval Battle!";
-    private async Task RedirectToGamePage()
+    private bool gameCreated = false;
+
+    private void CreateGame()
     {
-        NavigationManager.NavigateTo($"/game"); 
+        gameCreated = !gameCreated;
+    }
+    private void NavigateToGameWithDifficulty(string difficulty)
+    {
+        NavigationManager.NavigateTo($"/game/{difficulty}");
+    }
+
+    private void NavigateToPlayerVsPlayer()
+    {
+        NavigationManager.NavigateTo($"/game/pvp");
     }
 }
 
