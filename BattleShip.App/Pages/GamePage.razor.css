@@ -12,3 +12,97 @@
     margin-top: 5rem;
     margin-right: 5rem;
 }
+
+.homeContainer{
+    background-image: url(https://i.ibb.co/GcQ5Dv4/1b68e2b0-a272-457d-b074-ec73ece2f836.webp);
+    background-size: cover;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gameMode {
+    color: white;
+    font-size: 40px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+.menu button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #3498db; /* Couleur de fond des boutons */
+    color: #fff; /* Couleur du texte des boutons */
+    cursor: pointer;
+}
+
+.menu button:hover {
+    background-color: #2980b9; /* Changement de couleur au survol */
+}
+
+.header {
+    background-color: #22229b;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.menu p {
+    margin-left: 10px;
+}
+
+.globalContainer{
+    background-image: url(https://i.ibb.co/R31xjRW/css-pattern-by-magicpattern.png);
+    background-size: cover;
+    height: 97vh;
+    width: 99vw;
+}
+
+.grid-cell {
+    border: 1px solid black;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+}
+
+.grid-cell.ship {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+.grid-cell.hit {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.grid-cell.hit:hover {
+    background-color: rgba(178, 2, 2, 0.7);
+}
+
+.grid-cell.water {
+    background-color: rgba(0, 0, 255, 0.5);
+}
+
+.grid-cell.water:hover {
+    background-color: rgba(0, 0, 150, 0.7);
+}

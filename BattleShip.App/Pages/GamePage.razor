@@ -1,93 +1,121 @@
-@page "/game"
+@page "/game/{difficulty}"
 @inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
 
 @using System.Text.Json;
 
-<h3>BattleShip Game : @Id</h3>
-<div class="container">
-    <div class="playerGrid">
-        <h4>Your Grid</h4>
-        <div class="playerTable">
-            <table>
-                <tr>
-                    <td></td> <!-- Empty cell for the top-left corner -->
-                    @for (char c = 'A'; c <= 'J'; c++)
-                    {
-                        <td style="text-align: center">@c</td>
-                    }
-                </tr>
-                @for (int row = 0; row < 10; row++) {
-                    <tr>
-                        <td>@(row + 1)</td> <!-- Row number -->
-                        @for (int col = 0; col < 10; col++) {
-                            var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
-                            if (playerGrid[row, col] == "S") {
-                                style += "background-color: rgba(128, 128, 128, 0.2);";
-                            } else if (playerGrid[row, col] == "X") {
-                                style += "background-color: rgba(255, 0, 0, 0.2);"; 
-                            } else {
-                                style += "background-color: rgba(0, 0, 255, 0.2);"; 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="globalContainer">
+    <div class="header">
+        <div class="menu" @onclick="RedirectToHomePage">
+            <i class="fas fa-ship"></i>
+            <p>Retour menu</p>
+        </div>
+        <h3 class="BattleshipGameTitle">BattleShip Game : @Id</h3>
+    </div>
+
+    @if(!gameOver) {
+        <div class="container">
+            <div class="playerGrid">
+                <h4>Your Grid</h4>
+                <div class="playerTable">
+                    <table>
+                        <tr>
+                            <td></td> <!-- Empty cell for the top-left corner -->
+                            @for (char c = 'A'; c <= 'J'; c++)
+                            {
+                                <td style="text-align: center">@c</td>
                             }
-                            <td style="@style">
-                                @playerGrid[row, col]
-                            </td>
+                        </tr>
+                        @for (int row = 0; row < 10; row++) {
+                            <tr>
+                                <td>@(row + 1)</td> <!-- Row number -->
+                                @for (int col = 0; col < 10; col++) {
+                                    var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
+                                    if (playerGrid[row, col] == "S") {
+                                        style += "background-color: rgba(128, 128, 128, 0.4);";
+                                    } else if (playerGrid[row, col] == "X") {
+                                        style += "background-color: rgba(255, 0, 0, 0.4);"; 
+                                    } else {
+                                        style += "background-color: rgba(0, 0, 255, 0.4);"; 
+                                    }
+                                    <td style="@style">
+                                        @playerGrid[row, col]
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <div class="leaderboard">
+                <h4>Historique des coups joués</h4>
+                <ul>
+                    @foreach(var move in playerMoves) {
+                        <li>@move</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="computerGrid">
+                <h4>Opponent's Grid</h4>
+                <table>
+                    <tr>
+                        <td></td> <!-- Empty cell for the top-left corner -->
+                        @for (char c = 'A'; c <= 'J'; c++)
+                        {
+                            <td style="text-align: center">@c</td>
                         }
                     </tr>
-                }
-            </table>
-        </div>
-    </div>
-
-    <div class="leaderboard">
-        <h4>Historique des coups joués</h4>
-        <ul>
-            @foreach(var move in playerMoves) {
-                <li>@move</li>
-            }
-        </ul>
-    </div>
-
-    <div class="computerGrid">
-        <h4>Opponent's Grid</h4>
-        <table>
-            <tr>
-                <td></td> <!-- Empty cell for the top-left corner -->
-                @for (char c = 'A'; c <= 'J'; c++)
-                {
-                    <td style="text-align: center">@c</td>
-                }
-            </tr>
-            @for (int row = 0; row < 10; row++) {
-                var currentRow = row;
-                <tr>
-                    <td>@(row + 1)</td> <!-- Row number -->
-                    @for (int col = 0; col < 10; col++) {
-                        var currentCol = col;
-                        var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
-                        if (opponentGrid[row, col] == "S") {
-                            style += "background-color: rgba(128, 128, 128, 0.2);";
-                        } else if (opponentGrid[row, col] == "X") {
-                            style += "background-color: rgba(255, 0, 0, 0.2);"; 
-                        } else {
-                            style += "background-color: rgba(0, 0, 255, 0.2);"; 
-                        }
-                        <td @onclick="() => HandleClick(currentRow, currentCol)" style="@style">
-                            @opponentGrid[row, col]
-                        </td>
+                    @for (int row = 0; row < 10; row++) {
+                        var currentRow = row;
+                        <tr>
+                            <td>@(row + 1)</td> <!-- Row number -->
+                            @for (int col = 0; col < 10; col++) {
+                                var currentCol = col;
+                                var cellClass = "grid-cell ";
+                                if (opponentGrid[row, col] == "S") {
+                                    cellClass += "ship";
+                                } else if (opponentGrid[row, col] == "X") {
+                                    cellClass += "hit";
+                                } else {
+                                    cellClass += "water";
+                                }
+                                <td class="@cellClass" @onclick="() => HandleClick(currentRow, currentCol)">
+                                    @opponentGrid[row, col]
+                                </td>
+                            }
+                        </tr>
                     }
-                </tr>
-            }
-        </table>
-    </div>
+                </table>
+            </div>
+        </div>
+    }
+    else {
+        <div class="homeContainer">
+            <div class="gameMode">
+                <p>Game Over</p>
+                <p>Le gagnant est : @winner</p>
+            </div>
+            <div class="menu">
+                <button class="btn btn-primary" @onclick="RedirectToHomePage">Retour au menu</button>
+            </div>
 </div>
+}
+</div>
+
 
 @code {
     //[Parameter] public string Id { get; set; }
-    
+    [Parameter] public string difficulty { get; set; }
+
     private Models.Game game;
     private List<Models.Ship> playerShips;
     private string Id;
-
+    private bool gameOver = false;
+    private string winner = "";
     private string[,] opponentGrid = new string[10, 10];
     private string[,] playerGrid = new string[10, 10];
     private List<string> playerMoves = new List<string>();
@@ -135,9 +163,13 @@
 
             if(attackResponse.ComputerWon == true){
                 Console.WriteLine("L'ordinateur a gagné !");
+                gameOver = true;
+                winner = "Computer";
             }
             if(attackResponse.PlayerWon == true){
                 Console.WriteLine("Tu as gagné !");
+                gameOver = true;
+                winner = "Player";
             }
 
             if(playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "S") {
@@ -169,7 +201,6 @@
 
             StateHasChanged();
             
-            
         }
         else
         {
@@ -179,7 +210,7 @@
 
     private async Task<Models.Game> StartGame(){
 
-        var response = await HttpClient.GetAsync("/start");
+        var response = await HttpClient.GetAsync($"/start/{difficulty}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -198,4 +229,10 @@
         }
         return null;
     }
+
+    private async Task RedirectToHomePage()
+    {
+        NavigationManager.NavigateTo($"/"); 
+    }
+
 }
