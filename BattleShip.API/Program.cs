@@ -58,10 +58,19 @@ app.MapGet("/start/{difficulty}", (string difficulty, NavalShipService navalShip
 app.MapGet("/start/pvp", (NavalShipService navalShipService) =>
 {
     GamePVP gamePVP = new GamePVP();
-    gamePVP.gameId = Guid.NewGuid().ToString();
-    
+    gamePVP.gamePVPId = Guid.NewGuid().ToString();
+    navalShipService.SaveGamePVP(gamePVP);
     return Results.Ok(gamePVP);
 
+});
+
+app.MapGet("/join/pvp/{gamePVPId}", async (string gamePVPId, NavalShipService navalShipService) =>
+{
+    GamePVP gamePVP = await navalShipService.GetGamePVPFromId(gamePVPId);
+    if (gamePVP == null) {
+        return Results.NotFound("Game not found");
+    }
+    return Results.Ok(gamePVP);
 });
 
 app.MapPost("/attack/{gameId}", (
@@ -71,26 +80,5 @@ app.MapPost("/attack/{gameId}", (
     {
         return Results.Ok(navalShipService.Attack(gameId, coordinate));
     });
-
-        /*var game = await navalShipService.GetGameFromId(gameId);
-        if (game == null) {
-            return Results.NotFound("Game not found");
-        }
-
-        var response = new AttackResponse();
-
-        if (game.IsShipAtCoordinate(coordinate)) {
-            response.PlayerAttackResult = true;
-        } else {
-            response.PlayerAttackResult = false;
-        }
-
-        //response.ComputerAttack = navalShipService.AIAttack(gameId, game.playerShips);
-
-        //Il faudrait vérifier ici si y'a un gagnant et le retourner dans le response
-        Console.WriteLine($"response pattack : {response.PlayerAttackResult}");
-        return Results.Ok(response);*/
-
-
 
 app.Run();

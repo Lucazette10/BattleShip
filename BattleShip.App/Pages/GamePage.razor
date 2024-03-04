@@ -17,47 +17,50 @@
 
     @if(!gameOver) {
         <div class="container">
-            <div class="playerGrid">
-                <h4>Your Grid</h4>
-                <div class="playerTable">
-                    <table>
-                        <tr>
-                            <td></td> <!-- Empty cell for the top-left corner -->
-                            @for (char c = 'A'; c <= 'J'; c++)
-                            {
-                                <td style="text-align: center">@c</td>
-                            }
-                        </tr>
-                        @for (int row = 0; row < 10; row++) {
+            <div class="playerSideContainer">
+                <div class="playerGrid">
+                    <h4>Your Grid</h4>
+                    <div class="playerTable">
+                        <table>
                             <tr>
-                                <td>@(row + 1)</td> <!-- Row number -->
-                                @for (int col = 0; col < 10; col++) {
-                                    var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
-                                    if (playerGrid[row, col] == "S") {
-                                        style += "background-color: rgba(128, 128, 128, 0.4);";
-                                    } else if (playerGrid[row, col] == "X") {
-                                        style += "background-color: rgba(255, 0, 0, 0.4);"; 
-                                    } else {
-                                        style += "background-color: rgba(0, 0, 255, 0.4);"; 
-                                    }
-                                    <td style="@style">
-                                        @playerGrid[row, col]
-                                    </td>
+                                <td></td> <!-- Empty cell for the top-left corner -->
+                                @for (char c = 'A'; c <= 'J'; c++)
+                                {
+                                    <td style="text-align: center">@c</td>
                                 }
                             </tr>
+                            @for (int row = 0; row < 10; row++) {
+                                <tr>
+                                    <td>@(row + 1)</td> <!-- Row number -->
+                                    @for (int col = 0; col < 10; col++) {
+                                        var style = "border: 1px solid black; width: 20px; height: 20px; text-align: center;";
+                                        if (playerGrid[row, col] == "A" || playerGrid[row, col] == "B" || playerGrid[row, col] == "C" || playerGrid[row, col] == "D" || playerGrid[row, col] == "E" || playerGrid[row, col] == "F") {
+                                            style += "background-color: rgba(128, 128, 128, 0.5);";
+                                        } else if (playerGrid[row, col] == "X") {
+                                            style += "background-color: rgba(255, 0, 0, 0.5);"; 
+                                        } else {
+                                            style += "background-color: rgba(0, 0, 255, 0.5);"; 
+                                        }
+                                        <td style="@style">
+                                            @playerGrid[row, col]
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+
+                <h4>Historique des coups joués</h4>
+                <div class="leaderboard">
+                    <ul>
+                        @foreach(var move in playerMoves) {
+                            <li>@move</li>
                         }
-                    </table>
+                    </ul>
                 </div>
             </div>
-
-            <div class="leaderboard">
-                <h4>Historique des coups joués</h4>
-                <ul>
-                    @foreach(var move in playerMoves) {
-                        <li>@move</li>
-                    }
-                </ul>
-            </div>
+            
 
             <div class="computerGrid">
                 <h4>Opponent's Grid</h4>
@@ -130,7 +133,7 @@
         {
             foreach (var coordinate in ship.coordinates)
             {
-                playerGrid[coordinate.Row, coordinate.Col] = "S";
+                playerGrid[coordinate.Row, coordinate.Col] = ship.name;
             }
         }
 
@@ -172,10 +175,17 @@
                 winner = "Player";
             }
 
-            if(playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "S") {
-                Console.WriteLine("Computer hit your ship!");
-                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] = "X";
+            if(playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "A" ||
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "B" ||
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "C" ||
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "D" ||
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "E" ||
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "F" ||
+                playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == "G") {
+                    Console.WriteLine("Computer hit your ship!");
+                    playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] = "X";
             }
+
             else if(playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] == null) {
                 Console.WriteLine("Computer missed your ship!");
                 playerGrid[attackResponse.ComputerAttack.Row, attackResponse.ComputerAttack.Col] = "O";

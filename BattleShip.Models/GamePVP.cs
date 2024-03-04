@@ -6,7 +6,7 @@ public class GamePVP {
     public List<Ship> playerShips2 { get; set; }
     public List<Coordinate> player1AttacksCoordinates { get; set; }
     public List<Coordinate> player2AttacksCoordinates { get; set; }
-    public string gameId { get; set; }
+    public string gamePVPId { get; set; }
 
     public GamePVP() {
 

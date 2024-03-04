@@ -1,6 +1,6 @@
 .container {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
 }
 
 .playerGrid{
@@ -82,8 +82,8 @@
 
 .grid-cell {
     border: 1px solid black;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     text-align: center;
 }
 
@@ -105,4 +105,9 @@
 
 .grid-cell.water:hover {
     background-color: rgba(0, 0, 150, 0.7);
+}
+
+.leaderboard{
+    max-height: 125px;
+    overflow-y: auto;
 }
